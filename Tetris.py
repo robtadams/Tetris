@@ -2,6 +2,8 @@ import pygame
 import random
 import time
 
+from Pieces import Piece
+
 global TEST
 TEST = True
 
@@ -9,34 +11,54 @@ class Tetris():
 
     def __init__(self):
 
+        """ Initialization """
+
+        # cellSize: the size of each cell in the game
         self.cellSize = 25
+
+        # width: the width of the screen
         self.width = 15
+
+        # height: the height of the screen
         self.height = self.width * 2
 
-        self.testCellX = 5
-        self.testCellY = 5
-
+        # clock: pygame's internal clock
         self.clock = pygame.time.Clock()
 
+        # running: whether the game is currently running or not
         self.running = True
 
+        # screen: the game screen
         self.screen = pygame.display.set_mode((self.cellSize * self.width,
                                                 self.cellSize * self.height))
 
+        # gravityTimerMax: the max number of ticks for gravity to apply to the current piece
         self.gravityTimerMax = 10
+
+        # gravityTimer: the number of remaining ticks before gravity is applied to the current piece
         self.gravityTimer = self.gravityTimerMax
 
+        """ Constructing Block Array """
+
+        # blockArray: a 2D array of all the cells in the game
         self.blockArray = []
 
+        # For each row in the game...
         for row in range(self.height):
 
+            # ... make a temp list
             temp = []
 
+            # For each column in the row...
             for col in range(self.width):
 
+                # ... append a 0 to the temp list
                 temp.append(0)
 
+            # Append the temp list to the block array
             self.blockArray.append(temp)
+
+        """ Print Init Values """
 
         if TEST:
 
