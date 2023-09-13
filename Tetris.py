@@ -5,7 +5,7 @@ import time
 from Pieces import Piece
 
 global TEST
-TEST = True
+TEST = False
 
 class Tetris():
 
@@ -33,7 +33,7 @@ class Tetris():
                                                 self.cellSize * self.height))
 
         # gravityTimerMax: the max number of ticks for gravity to apply to the current piece
-        self.gravityTimerMax = 10
+        self.gravityTimerMax = 60
 
         # gravityTimer: the number of remaining ticks before gravity is applied to the current piece
         self.gravityTimer = self.gravityTimerMax
@@ -163,7 +163,7 @@ class Tetris():
         # While running is True...
         while self.running:
 
-            time.sleep(.1)
+            """ Piece Generation """
 
             # Check if piece needs to be made...
             if self.createPiece:
@@ -176,39 +176,91 @@ class Tetris():
                 
                 self.createPiece = False
 
+            """ Fall Check """
+
             # Check if piece needs to fall...
             if self.gravityTimer <= 0:
 
-                # Reset the gravit timer
+                # Reset the gravity timer
                 self.gravityTimer = self.gravityTimerMax
 
                 # Remove all 1s (active pieces) from the board
                 self.cleanup()
 
                 # Move the active piece down 1 square
-                self.piece.fall()
+                self.piece.fall(self.height)
 
                 # Update the blockArray with the new piece locations
                 self.update()
 
+                # Update the game's display
                 pygame.display.update()
 
-                if TEST:
-                    print("\nBlock Array: 0 = Empty | 1 = Active | -1 = Static")
-                    for row in self.blockArray:
-                        for col in row:
-                            print(col, end=" ")
-                        print()
-                    print()
-
+            # If the piece does not need to fall...
             else:
+
+                # ... subtract one from the fall timer
                 self.gravityTimer -= 1
 
-            # Check if piece is being moved by the player...
+            """ TEST """
 
-            # Cleanup the screen
+            if TEST:
+                print("Block Array: 0 = Empty | 1 = Active | -1 = Static\n")
+                for row in self.blockArray:
+                    for col in row:
+                        print(col, end=" ")
+                    print()
+                print()
 
-            # Draw piece
+            """ Input Check """
+
+            # Check if the player created an event...
+            for event in pygame.event.get():
+
+                # ... if the player pressed a key...
+                if event.type == pygame.KEYDOWN:
+
+                    # ... if the player pressed Right...
+                    if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+
+                        # ... check if the piece can go right...
+                        if not self.piece.goRight(self.width):
+
+                            # ... if it can't, print out a message
+                            print("Can't go right!")
+
+                    # ... if the player pressed Left...
+                    elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
+
+                        # ... check if the piece can go left...
+                        if not self.piece.goLeft():
+
+                            # ... if it can't, print out a message
+                            print("Can't go left!")
+
+                    # ... if the player pressed Down...
+                    elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
+
+                        # ... check if the piece can go down...
+                        if self.piece.fall(self.height):
+
+                            # ... if it can, reset the gravityTimer
+                            self.gravityTimer = self.gravityTimerMax
+
+                        # ... if it can't, print out a message
+                        else:
+                            print("Can't go lower!")
+
+                    # Remove all 1s (active pieces) from the board
+                    self.cleanup()
+
+                    # Update the blockArray with the new piece locations
+                    self.update()
+
+                    # Update the game's display
+                    pygame.display.update()
+
+            self.clock.tick(60)
 
 Game = Tetris()
 Game.main()

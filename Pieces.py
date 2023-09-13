@@ -72,12 +72,66 @@ class Piece():
                 self.TBlock()
                 self.name = "T Block"
 
-    def fall(self):
+    def fall(self, gameHeight):
+
+        tempLocations = []
 
         for location in self.locations:
 
-            location[1] += 1
+            if location[1] + 1 < gameHeight:
 
+                tempLocation = [location[0], location[1] + 1]
+
+            else:
+
+                return False
+
+            tempLocations.append(tempLocation)
+
+        self.locations = tempLocations
+
+        return True
+
+    def goRight(self, gameWidth):
+
+        tempLocations = []
+
+        for location in self.locations:
+
+            if location[0] + 1 < gameWidth:
+
+                tempLocation = [location[0] + 1, location[1]]
+
+            else:
+
+                return False
+
+            tempLocations.append(tempLocation)
+
+        self.locations = tempLocations
+
+        return True
+
+    def goLeft(self):
+
+        tempLocations = []
+
+        for location in self.locations:
+
+            if location[0] - 1 >= 0:
+
+                tempLocation = [location[0] - 1, location[1]]
+
+            else:
+
+                return False
+
+            tempLocations.append(tempLocation)
+
+        self.locations = tempLocations
+
+        return True
+    
     def Square(self):
 
         self.locations = [[7, -2], [8, -2], [7, -1], [8, -1]]
