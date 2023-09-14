@@ -2,7 +2,7 @@ import random
 
 class Piece():
 
-    def __init__(self):
+    def __init__(self, shapeVal):
 
         """ Initialization """
 
@@ -12,65 +12,60 @@ class Piece():
         # name: the name of the piece
         self.name = None
 
-        # remainingShapes: the pieces that have yet to be picked in the set
-        self.remainingShapes = [1, 2, 3, 4, 5, 6, 7]
+        # color: the color of the piece
+        self.color = None
 
         # Pick one of the pieces among the list of remaining shapes
-        self.generatePiece()
+        self.generatePiece(shapeVal)
 
-    def generatePiece(self):
+    def generatePiece(self, shapeVal):
 
         """ Generate New Piece """
 
-        # If there are no more pieces remaining...
-        if len(self.remainingShapes) <= 0:
-
-            # ... reset the list of remaining pieces
-            self.remainingShapes = [1, 2, 3, 4, 5, 6, 7]
-
-        # Grab a piece from the list of remaining pieces
-        value = random.randint(1, len(self.remainingShapes))
-
-        # Remove the chosen piece from the list of remaining pieces
-        self.remainingShapes.remove(value)
-
         # Find the piece that was chosen
-        match value:
+        match shapeVal:
 
             # Square
             case 1:
                 self.Square()
                 self.name = "Square"
+                self.color = "yellow"
 
             # Line
             case 2:
                 self.Line()
                 self.name = "Line"
+                self.color = "cyan"
 
             # L Block Right
             case 3:
                 self.LBlockRight()
                 self.name = "L Block Right"
+                self.color = "orange"
 
             # L Block Left
             case 4:
                 self.LBlockLeft()
                 self.name = "L Block Left"
+                self.color = "blue"
 
             # Z Block Right
             case 5:
                 self.ZBlockRight()
                 self.name = "Z Block Right"
+                self.color = "light green"
 
             # Z Block Left
             case 6:
                 self.ZBlockLeft()
                 self.name = "Z Block Left"
+                self.color = "red"
 
             # T Block
             case 7:
                 self.TBlock()
                 self.name = "T Block"
+                self.color = "purple"
 
     def fall(self, gameHeight):
 

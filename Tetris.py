@@ -43,6 +43,9 @@ class Tetris():
 
         # piece: the piece the player is currently controlling
         self.piece = None
+        
+        # remainingShapes: the pieces that have yet to be picked in the set
+        self.remainingShapes = [1, 2, 3, 4, 5, 6, 7]
 
         """ Constructing Block Array """
 
@@ -132,8 +135,39 @@ class Tetris():
                 drawRect = [xCoord, yCoord, self.cellSize, self.cellSize]
 
                 # Draw the active cell onto the screen
-                pygame.draw.rect(self.screen, (0, 255, 155), drawRect)
-                
+                pygame.draw.rect(self.screen, self.piece.color, drawRect)
+
+    def stopPiece(self):
+
+        """ Stop Piece """
+
+        # For each block in the piece...
+        for location in self.piece.locations:
+
+            # ... get the X and Y coordinates of the cell
+            xCoord = location[0]
+            yCoord = location[1]
+
+            # Set the coordinates in the block array to -1
+            # -1 is the value for inactive blocks
+            self.blockArray[yCoord][xCoord] = -1
+
+        # Tell the game to create a new piece
+        self.createPiece = True
+
+        # Delete the locations of the old piece
+        self.piece.locations = []
+
+        """ TEST """
+
+        if TEST:
+            print("Block Array: 0 = Empty | 1 = Active | -1 = Static\n")
+            for row in self.blockArray:
+                for col in row:
+                    print(col, end=" ")
+                print()
+            print()
+    
     def main(self):
 
         """ Draw Game Board """
@@ -168,8 +202,20 @@ class Tetris():
             # Check if piece needs to be made...
             if self.createPiece:
 
-                # ... create a new piece
-                self.piece = Piece()
+                # ... Check if there are any shapes left unselected...
+                if len(self.remainingShapes) <= 0:
+
+                    # ... Refresh the list if there are no shapes unselected
+                    self.remainingShapes = [1, 2, 3, 4, 5, 6, 7]
+
+                # Select a random shape from the list
+                shapeVal = random.randint(1, len(self.remainingShapes))
+
+                # Create a new piece with the selected shape
+                self.piece = Piece(shapeVal)
+
+                # Remove the selected shape from the list
+                self.remainingShapes.remove(shapeVal)
 
                 if TEST:
                     print("=== New Piece Value ===\nPiece Name: {}".format(self.piece.name))
@@ -201,16 +247,6 @@ class Tetris():
 
                 # ... subtract one from the fall timer
                 self.gravityTimer -= 1
-
-            """ TEST """
-
-            if TEST:
-                print("Block Array: 0 = Empty | 1 = Active | -1 = Static\n")
-                for row in self.blockArray:
-                    for col in row:
-                        print(col, end=" ")
-                    print()
-                print()
 
             """ Input Check """
 
@@ -249,7 +285,10 @@ class Tetris():
 
                         # ... if it can't, print out a message
                         else:
+                            
                             print("Can't go lower!")
+
+                            self.stopPiece()
 
                     # Remove all 1s (active pieces) from the board
                     self.cleanup()
