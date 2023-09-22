@@ -73,7 +73,7 @@ class Piece():
 
         for location in self.locations:
 
-            if location[1] + 1 < gameHeight or :
+            if location[1] + 1 < gameHeight:
 
                 tempLocation = [location[0], location[1] + 1]
 

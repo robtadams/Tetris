@@ -5,7 +5,7 @@ import time
 from Pieces import Piece
 
 global TEST
-TEST = True
+TEST = False
 
 class Tetris():
 
@@ -33,7 +33,7 @@ class Tetris():
                                                 self.cellSize * self.height))
 
         # gravityTimerMax: the max number of ticks for gravity to apply to the current piece
-        self.gravityTimerMax = 10
+        self.gravityTimerMax = 60
 
         # gravityTimer: the number of remaining ticks before gravity is applied to the current piece
         self.gravityTimer = self.gravityTimerMax
@@ -43,9 +43,6 @@ class Tetris():
 
         # piece: the piece the player is currently controlling
         self.piece = None
-
-        # stopFlag: a boolean that keeps track if the 
-        self.stopFlag = False
         
         # remainingShapes: the pieces that have yet to be picked in the set
         self.remainingShapes = [1, 2, 3, 4, 5, 6, 7]
@@ -158,6 +155,9 @@ class Tetris():
         # Tell the game to create a new piece
         self.createPiece = True
 
+        # Delete the locations of the old piece
+        self.piece.locations = []
+
         """ TEST """
 
         if TEST:
@@ -209,10 +209,13 @@ class Tetris():
                     self.remainingShapes = [1, 2, 3, 4, 5, 6, 7]
 
                 # Select a random shape from the list
-                shapeVal = random.randint(1, len(self.remainingShapes)) - 1
+                shapeVal = random.randint(1, len(self.remainingShapes))
 
                 # Create a new piece with the selected shape
-                self.piece = Piece(self.remainingShapes.pop(shapeVal))
+                self.piece = Piece(shapeVal)
+
+                # Remove the selected shape from the list
+                self.remainingShapes.remove(shapeVal)
 
                 if TEST:
                     print("=== New Piece Value ===\nPiece Name: {}".format(self.piece.name))
@@ -230,24 +233,8 @@ class Tetris():
                 # Remove all 1s (active pieces) from the board
                 self.cleanup()
 
-                # If the active piece can't fall...
-                if not self.piece.fall(self.height):
-
-                    # ... stop the piece after it updates
-                    self.stopFlag = True
-
-                # Check the piece's locations...
-                for location in self.piece.locations:
-
-                    # ... pull out the X and Y coordinates
-                    xCoord = location[0]
-                    yCoord = location[1]
-
-                    # If the piece is going to hit a static block...
-                    if self.blockArray[yCoord][xCoord] == -1:
-
-                        # ... stop the piece after it updates
-                        self.stopFlag = True
+                # Move the active piece down 1 square
+                self.piece.fall(self.height)
 
                 # Update the blockArray with the new piece locations
                 self.update()
@@ -311,12 +298,6 @@ class Tetris():
 
                     # Update the game's display
                     pygame.display.update()
-
-            if self.stopFlag:
-
-                self.stopPiece()
-
-                self.stopFlag = False
 
             self.clock.tick(60)
 
