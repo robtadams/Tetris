@@ -209,13 +209,10 @@ class Tetris():
                     self.remainingShapes = [1, 2, 3, 4, 5, 6, 7]
 
                 # Select a random shape from the list
-                shapeVal = random.randint(1, len(self.remainingShapes))
+                shapeVal = random.randint(0, len(self.remainingShapes) - 1)
 
                 # Create a new piece with the selected shape
-                self.piece = Piece(shapeVal)
-
-                # Remove the selected shape from the list
-                self.remainingShapes.remove(shapeVal)
+                self.piece = Piece(self.remainingShapes.pop(shapeVal))
 
                 if TEST:
                     print("=== New Piece Value ===\nPiece Name: {}".format(self.piece.name))
