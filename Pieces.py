@@ -67,65 +67,120 @@ class Piece():
                 self.name = "T Block"
                 self.color = "purple"
 
-    def fall(self, gameHeight):
+    def fall(self, gameHeight, blockArray):
 
+        """ Boundry Check """
+
+        # tempLocations: A temporary list that will contain the locations of
+        #                the piece's next locations.
         tempLocations = []
 
+        # For each location in the piece's locations...
         for location in self.locations:
 
+            # ... if the piece doesn't fall out of bounds ...
             if location[1] + 1 < gameHeight:
 
+                # ... calculate the piece's next location
                 tempLocation = [location[0], location[1] + 1]
 
+            # If the piece falls out of bounds...
             else:
 
+                # ... stop falling
                 return False
 
+            # Add the next location to tempLocations
             tempLocations.append(tempLocation)
 
+        """ Collision Check """
+
+        # For each new location...
+        for location in tempLocations:
+
+            # Get the X and Y coordinates for the parts of the piece
+            x = location[0]
+            y = location[1]
+
+            # ... Check if the piece will collide with another piece...
+            if blockArray[y][x] == -1:
+
+                # ... stop falling
+                return False
+
+        """ Update Locations """
+
+        # Update locations with the new locations
         self.locations = tempLocations
 
+        # Allow the piece to fall down
         return True
 
     def goRight(self, gameWidth):
 
+        """ Move the Piece Right """
+
+        # tempLocations: A temporary list that will contain the locations of
+        #                the piece's next locations.
         tempLocations = []
 
+        # For each location in the piece's locations...
         for location in self.locations:
 
+            # ... if the piece is moving inside the boundry...
             if location[0] + 1 < gameWidth:
 
+                # ... calculate the piece's next location
                 tempLocation = [location[0] + 1, location[1]]
 
+            # If the piece moves out of bounds...
             else:
 
+                # ... Stop moving
                 return False
 
+            # Add the next location to tempLocations
             tempLocations.append(tempLocation)
 
+        # Update the locations with the new locations
         self.locations = tempLocations
 
+        # Allow the piece to move Right
         return True
 
     def goLeft(self):
 
+        """ Move the Piece Left """
+
+        # tempLocations: A temporary list that will contain the locations of
+        #                the piece's next locations.
         tempLocations = []
 
+        # For each location in the piece's locations...
         for location in self.locations:
 
+            # ... if the piece is moving inside the boundry...
             if location[0] - 1 >= 0:
 
+                # ... calculate the piece's next location
                 tempLocation = [location[0] - 1, location[1]]
 
+            # If the piece moves out of bounds...
             else:
 
+                # ... Stop moving
                 return False
 
+            # Add the next location to tempLocations
             tempLocations.append(tempLocation)
 
+        # Update the locations with the new locations
         self.locations = tempLocations
 
+        # Allow the piece to move Left
         return True
+
+    """ Define the piece's default locations """
     
     def Square(self):
 

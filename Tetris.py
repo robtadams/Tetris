@@ -5,7 +5,7 @@ import time
 from Pieces import Piece
 
 global TEST
-TEST = False
+TEST = True
 
 class Tetris():
 
@@ -33,7 +33,7 @@ class Tetris():
                                                 self.cellSize * self.height))
 
         # gravityTimerMax: the max number of ticks for gravity to apply to the current piece
-        self.gravityTimerMax = 60
+        self.gravityTimerMax = 0
 
         # gravityTimer: the number of remaining ticks before gravity is applied to the current piece
         self.gravityTimer = self.gravityTimerMax
@@ -227,11 +227,14 @@ class Tetris():
                 # Reset the gravity timer
                 self.gravityTimer = self.gravityTimerMax
 
+                # If the piece is colliding with an object below it...
+                if not self.piece.fall(self.height, self.blockArray):
+
+                    # ... Deactivate the piece and generate a new one.
+                    self.stopPiece()
+
                 # Remove all 1s (active pieces) from the board
                 self.cleanup()
-
-                # Move the active piece down 1 square
-                self.piece.fall(self.height)
 
                 # Update the blockArray with the new piece locations
                 self.update()
@@ -253,14 +256,17 @@ class Tetris():
                 # ... if the player pressed a key...
                 if event.type == pygame.KEYDOWN:
 
+                    """ Move Right """
+
                     # ... if the player pressed Right...
                     if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
 
                         # ... check if the piece can go right...
                         if not self.piece.goRight(self.width):
-
-                            # ... if it can't, print out a message
-                            print("Can't go right!")
+                            
+                            if TEST:
+                                # ... if it can't, print out a message
+                                print("Can't go right!")
 
                     # ... if the player pressed Left...
                     elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
@@ -268,22 +274,24 @@ class Tetris():
                         # ... check if the piece can go left...
                         if not self.piece.goLeft():
 
-                            # ... if it can't, print out a message
-                            print("Can't go left!")
-
+                            if TEST:
+                                # ... if it can't, print out a message
+                                print("Can't go left!")
+                    
                     # ... if the player pressed Down...
                     elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
 
                         # ... check if the piece can go down...
-                        if self.piece.fall(self.height):
+                        if self.piece.fall(self.height, self.blockArray):
 
                             # ... if it can, reset the gravityTimer
                             self.gravityTimer = self.gravityTimerMax
 
                         # ... if it can't, print out a message
                         else:
-                            
-                            print("Can't go lower!")
+
+                            if TEST:
+                                print("Can't go lower!")
 
                             self.stopPiece()
 
