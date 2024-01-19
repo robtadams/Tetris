@@ -5,7 +5,7 @@ import time
 from Pieces import Piece
 
 global TEST
-TEST = True
+TEST = False
 
 class Tetris():
 
@@ -33,7 +33,7 @@ class Tetris():
                                                 self.cellSize * self.height))
 
         # gravityTimerMax: the max number of ticks for gravity to apply to the current piece
-        self.gravityTimerMax = 0
+        self.gravityTimerMax = 1
 
         # gravityTimer: the number of remaining ticks before gravity is applied to the current piece
         self.gravityTimer = self.gravityTimerMax

@@ -103,7 +103,7 @@ class Piece():
             y = location[1]
 
             # ... Check if the piece will collide with another piece...
-            if blockArray[y][x] == -1:
+            if y >= 0 and blockArray[y][x] == -1:
 
                 # ... stop falling
                 return False
