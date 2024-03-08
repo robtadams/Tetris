@@ -33,7 +33,7 @@ class Tetris():
                                                 self.cellSize * self.height))
 
         # gravityTimerMax: the max number of ticks for gravity to apply to the current piece
-        self.gravityTimerMax = 1
+        self.gravityTimerMax = 10
 
         # gravityTimer: the number of remaining ticks before gravity is applied to the current piece
         self.gravityTimer = self.gravityTimerMax
@@ -114,7 +114,11 @@ class Tetris():
 
     def update(self):
 
-        """ Update """
+        """ Set Piece Block Array """
+
+        self.piece.blockArray = self.blockArray
+
+        """ Move Piece """
 
         # For each location in the piece's locations...
         for location in self.piece.locations:
@@ -214,6 +218,8 @@ class Tetris():
                 # Create a new piece with the selected shape
                 self.piece = Piece(self.remainingShapes.pop(shapeVal))
 
+                self.piece.blockArray = self.blockArray
+
                 if TEST:
                     print("=== New Piece Value ===\nPiece Name: {}".format(self.piece.name))
                 
@@ -228,7 +234,7 @@ class Tetris():
                 self.gravityTimer = self.gravityTimerMax
 
                 # If the piece is colliding with an object below it...
-                if not self.piece.fall(self.height, self.blockArray):
+                if not self.piece.fall(self.height):
 
                     # ... Deactivate the piece and generate a new one.
                     self.stopPiece()
@@ -256,7 +262,10 @@ class Tetris():
                 # ... if the player pressed a key...
                 if event.type == pygame.KEYDOWN:
 
-                    """ Move Right """
+                    if event.key == pygame.K_ESCAPE:
+                        self.running = False
+
+                    """ Movement """
 
                     # ... if the player pressed Right...
                     if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
@@ -282,7 +291,7 @@ class Tetris():
                     elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
 
                         # ... check if the piece can go down...
-                        if self.piece.fall(self.height, self.blockArray):
+                        if self.piece.fall(self.height):
 
                             # ... if it can, reset the gravityTimer
                             self.gravityTimer = self.gravityTimerMax
@@ -295,16 +304,20 @@ class Tetris():
 
                             self.stopPiece()
 
-                    # Remove all 1s (active pieces) from the board
-                    self.cleanup()
+                # Remove all 1s (active pieces) from the board
+                self.cleanup()
 
-                    # Update the blockArray with the new piece locations
-                    self.update()
+                # Update the blockArray with the new piece locations
+                self.update()
 
-                    # Update the game's display
-                    pygame.display.update()
+                # Update the game's display
+                pygame.display.update()
 
+            # Set the clock speed to 60 ticks per second
             self.clock.tick(60)
+
+        # When running is False, quit the game
+        pygame.quit()
 
 Game = Tetris()
 Game.main()

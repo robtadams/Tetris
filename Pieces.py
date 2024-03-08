@@ -15,6 +15,9 @@ class Piece():
         # color: the color of the piece
         self.color = None
 
+        # blockArray: a 2D array of all the cells in the game
+        self.blockArray = []
+
         # Pick one of the pieces among the list of remaining shapes
         self.generatePiece(shapeVal)
 
@@ -67,7 +70,7 @@ class Piece():
                 self.name = "T Block"
                 self.color = "purple"
 
-    def fall(self, gameHeight, blockArray):
+    def fall(self, gameHeight):
 
         """ Boundry Check """
 
@@ -103,7 +106,7 @@ class Piece():
             y = location[1]
 
             # ... Check if the piece will collide with another piece...
-            if y >= 0 and blockArray[y][x] == -1:
+            if y >= 0 and self.blockArray[y][x] == -1:
 
                 # ... stop falling
                 return False
@@ -128,7 +131,7 @@ class Piece():
         for location in self.locations:
 
             # ... if the piece is moving inside the boundry...
-            if location[0] + 1 < gameWidth:
+            if location[0] + 1 < gameWidth and self.blockArray[location[1]][location[0] + 1] != -1:
 
                 # ... calculate the piece's next location
                 tempLocation = [location[0] + 1, location[1]]
@@ -160,7 +163,7 @@ class Piece():
         for location in self.locations:
 
             # ... if the piece is moving inside the boundry...
-            if location[0] - 1 >= 0:
+            if location[0] - 1 >= 0 and self.blockArray[location[1]][location[0] - 1] != -1:
 
                 # ... calculate the piece's next location
                 tempLocation = [location[0] - 1, location[1]]
